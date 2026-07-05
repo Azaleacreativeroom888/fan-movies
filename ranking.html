@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RANKING | FILM NOTE</title>
+<meta name="robots" content="noai, noimageai">
+<style>
+  :root {
+    --film-black: #0d0b0c;
+    --film-black-2: #161314;
+    --film-cream: #ece6da;
+    --film-red: #a13d3d;
+    --film-gold: #b89b5e;
+    --film-grey: #8a8580;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--film-black);
+    color: var(--film-cream);
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+    overflow-x: hidden;
+    padding: 0 26px;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.05;
+    background-image:
+      radial-gradient(circle at 20% 30%, #fff 0.5px, transparent 0.5px),
+      radial-gradient(circle at 70% 60%, #fff 0.5px, transparent 0.5px),
+      radial-gradient(circle at 40% 80%, #fff 0.5px, transparent 0.5px);
+    background-size: 3px 3px, 4px 4px, 5px 5px;
+    animation: grain 0.5s steps(4) infinite;
+  }
+  @keyframes grain {
+    0%, 100% { transform: translate(0,0); }
+    25% { transform: translate(-1px, 1px); }
+    50% { transform: translate(1px, -1px); }
+    75% { transform: translate(-1px, -1px); }
+  }
+
+  .film-edge {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 26px;
+    background: #050404;
+    z-index: 500;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--film-cream) 0px,
+      var(--film-cream) 14px,
+      transparent 14px,
+      transparent 26px
+    );
+    background-position: center 6px;
+    background-repeat: repeat-y;
+    background-size: 12px 26px;
+  }
+  .film-edge.left { left: 0; }
+  .film-edge.right { right: 0; }
+
+  header, nav, main, footer, .sprocket-strip { position: relative; z-index: 1; }
+
+  @media (max-width: 700px) {
+    .film-edge { width: 14px; background-size: 8px 22px; }
+    body { padding: 0 14px; }
+  }
+
+  .sprocket-strip {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 6px;
+    background: #050404;
+    height: 22px;
+    align-items: center;
+  }
+  .sprocket-strip span {
+    width: 11px;
+    height: 11px;
+    background: var(--film-black);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  header {
+    text-align: center;
+    padding: 60px 20px 40px;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.75)),
+      repeating-linear-gradient(115deg, #1a1516, #1a1516 2px, #100d0e 2px, #100d0e 4px);
+    border-bottom: 1px solid #3a3232;
+  }
+  header .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.5em;
+    color: var(--film-gold);
+    text-transform: uppercase;
+  }
+  header h1 {
+    font-size: 2.4rem;
+    margin: 16px 0 8px;
+    color: var(--film-cream);
+    text-shadow: 0 0 18px rgba(161,61,61,0.35);
+    letter-spacing: 0.15em;
+  }
+
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    background: var(--film-black-2);
+    flex-wrap: wrap;
+    border-bottom: 1px solid #2c2626;
+  }
+  nav a {
+    color: var(--film-cream);
+    text-decoration: none;
+    padding: 16px 26px;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    position: relative;
+  }
+  nav a::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 50%;
+    width: 0; height: 2px;
+    background: var(--film-red);
+    transition: all 0.3s;
+    transform: translateX(-50%);
+  }
+  nav a:hover { color: var(--film-gold); }
+  nav a:hover::after { width: 60%; }
+  nav a.current { color: var(--film-gold); }
+  nav a.current::after { width: 60%; }
+
+  main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 70px 24px 100px;
+  }
+
+  .page-header {
+    border: 1px solid #332c2c;
+    background: var(--film-black-2);
+    padding: 22px 26px;
+    margin-bottom: 46px;
+  }
+  .page-header h1 {
+    font-size: 1.2rem;
+    color: var(--film-gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+    font-weight: normal;
+  }
+  .page-header p {
+    font-size: 0.82rem;
+    color: var(--film-grey);
+    line-height: 1.8;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 26px;
+  }
+  .section-title .frame-no {
+    font-size: 0.7rem;
+    color: var(--film-grey);
+    border: 1px solid #3a3232;
+    padding: 3px 8px;
+    letter-spacing: 0.1em;
+  }
+  .section-title h2 {
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    color: var(--film-cream);
+    font-weight: normal;
+  }
+  .section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, #3a3232, transparent);
+  }
+
+  /* --- top ranking cards --- */
+  .top-rank {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 60px;
+  }
+  .rank-card {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: var(--film-black-2);
+    border: 1px solid #2c2626;
+    padding: 16px 20px;
+  }
+  .rank-badge {
+    flex: 0 0 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    border: 1px solid var(--film-gold);
+    color: var(--film-gold);
+  }
+  .rank-badge.top1 {
+    background: var(--film-red);
+    border-color: var(--film-red);
+    color: var(--film-cream);
+  }
+  .rank-card-body { flex: 1; }
+  .genre-tag {
+    display: inline-block;
+    font-size: 0.68rem;
+    color: var(--film-gold);
+    border: 1px solid #3a3232;
+    padding: 1px 8px;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .rank-title {
+    font-size: 0.98rem;
+    color: var(--film-cream);
+    margin-bottom: 6px;
+  }
+  .rank-text {
+    font-size: 0.82rem;
+    color: #c8c0b2;
+    line-height: 1.8;
+  }
+
+  /* --- full review list --- */
+  .review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 40px;
+  }
+  .review-item {
+    padding: 14px 6px;
+    border-bottom: 1px solid #2c2626;
+  }
+  .review-title {
+    font-size: 0.88rem;
+    color: var(--film-cream);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+  .review-text {
+    font-size: 0.8rem;
+    color: #b8b0a2;
+    line-height: 1.7;
+  }
+  .review-text:empty::before {
+    content: "—";
+    color: #4a4442;
+  }
+
+  .omission-note {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: repeating-linear-gradient(115deg, #141010, #141010 2px, #0d0b0c 2px, #0d0b0c 4px);
+    border: 1px dashed #3a3232;
+    padding: 14px 18px;
+    margin: 20px 0;
+    font-size: 0.78rem;
+    color: var(--film-grey);
+    letter-spacing: 0.05em;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    color: var(--film-grey);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid #3a3232;
+    padding-bottom: 2px;
+  }
+  .back-link:hover { color: var(--film-gold); border-color: var(--film-gold); }
+
+  footer {
+    text-align: center;
+    padding: 50px 20px 40px;
+    background: var(--film-black-2);
+    border-top: 1px solid #2c2626;
+  }
+  footer .foot-nav {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+    font-size: 0.78rem;
+  }
+  footer .foot-nav a {
+    color: var(--film-grey);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+  }
+  footer .foot-nav a:hover { color: var(--film-gold); }
+  footer .ai-notice {
+    font-size: 0.68rem;
+    color: #5c5652;
+    max-width: 500px;
+    margin: 0 auto 14px;
+    line-height: 1.7;
+  }
+  footer .copy {
+    font-size: 0.68rem;
+    color: #4a4442;
+    letter-spacing: 0.1em;
+  }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.9rem; }
+    nav a { padding: 14px 14px; font-size: 0.75rem; }
+    .rank-card { flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="film-edge left"></div>
+<div class="film-edge right"></div>
+
+<div class="sprocket-strip">
+  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<header>
+  <div class="eyebrow">A YEAR IN FILMS</div>
+  <h1>RANKING</h1>
+</header>
+
+<nav>
+  <a href="index.html">INDEX</a>
+  <a href="blog.html">BLOG</a>
+  <a href="ranking.html" class="current">RANKING</a>
+  <a href="about.html">ABOUT</a>
+</nav>
+
+<main>
+
+  <div class="page-header">
+    <h1>20XX年ランキング</h1>
+    <p>備忘録。感想にはネタバレを含みます。ランキングは随時入れ替わり、その年の最終的な順位は年末に確定します。</p>
+  </div>
+
+  <div class="section-title">
+    <span class="frame-no">TOP 10</span>
+    <h2>最新トップ10</h2>
+  </div>
+  <div class="top-rank">
+
+    <div class="rank-card">
+      <div class="rank-badge top1">1</div>
+      <div class="rank-card-body">
+        <div class="genre-tag">ジャンル</div>
+        <div class="rank-title">（作品タイトルを入れる）</div>
+        <div class="rank-text">（感想を入れる）</div>
+      </div>
+    </div>
+
+    <div class="rank-card">
+      <div class="rank-badge">2</div>
+      <div class="rank-card-body">
+        <div class="genre-tag">ジャンル</div>
+        <div class="rank-title">（作品タイトルを入れる）</div>
+        <div class="rank-text">（感想を入れる）</div>
+      </div>
+    </div>
+
+    <div class="rank-card">
+      <div class="rank-badge">3</div>
+      <div class="rank-card-body">
+        <div class="genre-tag">ジャンル</div>
+        <div class="rank-title">（作品タイトルを入れる）</div>
+        <div class="rank-text">（感想を入れる）</div>
+      </div>
+    </div>
+
+    <!-- 4〜10位も同様の .rank-card を追加 -->
+
+  </div>
+
+  <div class="section-title">
+    <span class="frame-no">ALL</span>
+    <h2>全レビュー一覧</h2>
+  </div>
+  <div class="review-list">
+
+    <div class="review-item">
+      <div class="review-title">（作品タイトル） <span class="genre-tag">ジャンル</span></div>
+      <div class="review-text">（感想を入れる）</div>
+    </div>
+
+    <div class="review-item">
+      <div class="review-title">（作品タイトル） <span class="genre-tag">ジャンル</span></div>
+      <div class="review-text">（感想を入れる）</div>
+    </div>
+
+    <div class="review-item">
+      <div class="review-title">（作品タイトル） <span class="genre-tag">ジャンル</span></div>
+      <div class="review-text"></div>
+    </div>
+
+    <div class="omission-note">✂️ 以下、感想は割愛させていただきます</div>
+
+    <div class="review-item">
+      <div class="review-title">（作品タイトル） <span class="genre-tag">ジャンル</span></div>
+      <div class="review-text"></div>
+    </div>
+
+    <!-- ここに残りの作品を .review-item で入力（長いのでこのまま追加していけます） -->
+
+  </div>
+
+  <a class="back-link" href="index.html">← トップページに戻る</a>
+
+</main>
+
+<footer>
+  <div class="foot-nav">
+    <a href="index.html">INDEX</a>
+    <a href="blog.html">BLOG</a>
+    <a href="ranking.html">RANKING</a>
+    <a href="about.html">ABOUT</a>
+  </div>
+  <p class="ai-notice">当サイトのコンテンツ（文章・画像等）は、AIの学習データとしての使用を禁止します。No part of this site may be used for AI training purposes.</p>
+  <p class="copy">FILM NOTE — All rights reserved.</p>
+</footer>
+
+</body>
+</html>
