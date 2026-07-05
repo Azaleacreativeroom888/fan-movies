@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABOUT | FILM NOTE</title>
+<meta name="robots" content="noai, noimageai">
+<style>
+  :root {
+    --film-black: #0d0b0c;
+    --film-black-2: #161314;
+    --film-cream: #ece6da;
+    --film-red: #a13d3d;
+    --film-gold: #b89b5e;
+    --film-grey: #8a8580;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--film-black);
+    color: var(--film-cream);
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+    overflow-x: hidden;
+    padding: 0 26px;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.05;
+    background-image:
+      radial-gradient(circle at 20% 30%, #fff 0.5px, transparent 0.5px),
+      radial-gradient(circle at 70% 60%, #fff 0.5px, transparent 0.5px),
+      radial-gradient(circle at 40% 80%, #fff 0.5px, transparent 0.5px);
+    background-size: 3px 3px, 4px 4px, 5px 5px;
+    animation: grain 0.5s steps(4) infinite;
+  }
+  @keyframes grain {
+    0%, 100% { transform: translate(0,0); }
+    25% { transform: translate(-1px, 1px); }
+    50% { transform: translate(1px, -1px); }
+    75% { transform: translate(-1px, -1px); }
+  }
+
+  .film-edge {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 26px;
+    background: #050404;
+    z-index: 500;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--film-cream) 0px,
+      var(--film-cream) 14px,
+      transparent 14px,
+      transparent 26px
+    );
+    background-position: center 6px;
+    background-repeat: repeat-y;
+    background-size: 12px 26px;
+  }
+  .film-edge.left { left: 0; }
+  .film-edge.right { right: 0; }
+
+  header, nav, main, footer, .sprocket-strip { position: relative; z-index: 1; }
+
+  @media (max-width: 700px) {
+    .film-edge { width: 14px; background-size: 8px 22px; }
+    body { padding: 0 14px; }
+  }
+
+  .sprocket-strip {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 6px;
+    background: #050404;
+    height: 22px;
+    align-items: center;
+  }
+  .sprocket-strip span {
+    width: 11px;
+    height: 11px;
+    background: var(--film-black);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  header {
+    text-align: center;
+    padding: 60px 20px 40px;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.75)),
+      repeating-linear-gradient(115deg, #1a1516, #1a1516 2px, #100d0e 2px, #100d0e 4px);
+    border-bottom: 1px solid #3a3232;
+  }
+  header .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.5em;
+    color: var(--film-gold);
+    text-transform: uppercase;
+  }
+  header h1 {
+    font-size: 2.4rem;
+    margin: 16px 0 8px;
+    color: var(--film-cream);
+    text-shadow: 0 0 18px rgba(161,61,61,0.35);
+    letter-spacing: 0.15em;
+  }
+
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    background: var(--film-black-2);
+    flex-wrap: wrap;
+    border-bottom: 1px solid #2c2626;
+  }
+  nav a {
+    color: var(--film-cream);
+    text-decoration: none;
+    padding: 16px 26px;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    position: relative;
+  }
+  nav a::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 50%;
+    width: 0; height: 2px;
+    background: var(--film-red);
+    transition: all 0.3s;
+    transform: translateX(-50%);
+  }
+  nav a:hover { color: var(--film-gold); }
+  nav a:hover::after { width: 60%; }
+  nav a.current { color: var(--film-gold); }
+  nav a.current::after { width: 60%; }
+
+  main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 70px 24px 100px;
+  }
+
+  section { margin-bottom: 60px; }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 26px;
+  }
+  .section-title .frame-no {
+    font-size: 0.7rem;
+    color: var(--film-grey);
+    border: 1px solid #3a3232;
+    padding: 3px 8px;
+    letter-spacing: 0.1em;
+  }
+  .section-title h2 {
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    color: var(--film-cream);
+    font-weight: normal;
+  }
+  .section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, #3a3232, transparent);
+  }
+
+  /* --- profile --- */
+  .profile-card {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    background: var(--film-black-2);
+    border: 1px solid #2c2626;
+    padding: 26px 28px;
+  }
+  .profile-frame {
+    flex: 0 0 96px;
+    height: 96px;
+    background: repeating-linear-gradient(60deg, #22201f, #22201f 3px, #1a1918 3px, #1a1918 6px);
+    border: 1px solid #332c2c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    color: var(--film-grey);
+    letter-spacing: 0.1em;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .profile-text p {
+    font-size: 0.88rem;
+    color: #d8d0c2;
+  }
+  .profile-text p + p { margin-top: 1em; }
+
+  /* --- link grid --- */
+  .link-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .link-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+    background: var(--film-black-2);
+    border: 1px solid #2c2626;
+    border-left: 3px solid var(--film-gold);
+    padding: 14px 16px;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+  .link-card:hover {
+    border-left-color: var(--film-red);
+    transform: translateY(-2px);
+  }
+  .link-icon {
+    font-size: 1.2rem;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(184,155,94,0.08);
+    border: 1px solid #332c2c;
+  }
+  .link-text { flex: 1; min-width: 0; }
+  .link-name {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--film-cream);
+    margin-bottom: 3px;
+  }
+  .link-desc {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--film-grey);
+    line-height: 1.5;
+  }
+  .link-arrow {
+    font-size: 1rem;
+    color: #4a4442;
+    flex-shrink: 0;
+    transition: color 0.25s, transform 0.25s;
+  }
+  .link-card:hover .link-arrow {
+    color: var(--film-gold);
+    transform: translateX(3px);
+  }
+
+  /* --- contact form --- */
+  .form-card {
+    background: var(--film-black-2);
+    border: 1px solid #2c2626;
+    border-left: 3px solid var(--film-gold);
+    padding: 28px 30px;
+  }
+  .form-intro {
+    font-size: 0.85rem;
+    color: var(--film-grey);
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+  .form-group { margin-bottom: 18px; }
+  .form-label {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--film-gold);
+    letter-spacing: 0.15em;
+    margin-bottom: 7px;
+  }
+  .required { color: var(--film-red); }
+  .form-input,
+  .form-textarea {
+    width: 100%;
+    background: #0a0808;
+    border: 1px solid #332c2c;
+    color: var(--film-cream);
+    font-family: inherit;
+    font-size: 0.88rem;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.25s;
+  }
+  .form-input::placeholder,
+  .form-textarea::placeholder { color: #4a4442; }
+  .form-input:focus,
+  .form-textarea:focus { border-color: var(--film-gold); }
+  .form-textarea { resize: vertical; min-height: 130px; }
+  .field-error {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--film-red);
+    margin-top: 5px;
+  }
+  .form-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid var(--film-gold);
+    color: var(--film-gold);
+    font-family: inherit;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    padding: 11px 26px;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .form-submit:hover {
+    background: var(--film-gold);
+    color: var(--film-black);
+  }
+  .form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .form-success {
+    background: rgba(184,155,94,0.08);
+    border: 1px solid var(--film-gold);
+    padding: 16px 20px;
+    text-align: center;
+    color: var(--film-gold);
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+  }
+  .form-error-global {
+    background: rgba(161,61,61,0.15);
+    border: 1px solid var(--film-red);
+    padding: 12px 16px;
+    color: #e0a0a0;
+    font-size: 0.8rem;
+    margin-bottom: 16px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 50px 20px 40px;
+    background: var(--film-black-2);
+    border-top: 1px solid #2c2626;
+  }
+  footer .foot-nav {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+    font-size: 0.78rem;
+  }
+  footer .foot-nav a {
+    color: var(--film-grey);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+  }
+  footer .foot-nav a:hover { color: var(--film-gold); }
+  footer .ai-notice {
+    font-size: 0.68rem;
+    color: #5c5652;
+    max-width: 500px;
+    margin: 0 auto 14px;
+    line-height: 1.7;
+  }
+  footer .copy {
+    font-size: 0.68rem;
+    color: #4a4442;
+    letter-spacing: 0.1em;
+  }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.9rem; }
+    nav a { padding: 14px 14px; font-size: 0.75rem; }
+    .profile-card { flex-direction: column; align-items: center; text-align: center; }
+    .link-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="film-edge left"></div>
+<div class="film-edge right"></div>
+
+<div class="sprocket-strip">
+  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<header>
+  <div class="eyebrow">WHO WRITES THIS</div>
+  <h1>ABOUT</h1>
+</header>
+
+<nav>
+  <a href="index.html">INDEX</a>
+  <a href="blog.html">BLOG</a>
+  <a href="ranking.html">RANKING</a>
+  <a href="about.html" class="current">ABOUT</a>
+</nav>
+
+<main>
+
+  <section class="profile">
+    <div class="section-title">
+      <span class="frame-no">01</span>
+      <h2>このサイトについて</h2>
+    </div>
+    <div class="profile-card">
+      <div class="profile-frame">PORTRAIT<br>PLACEHOLDER</div>
+      <div class="profile-text">
+        <p>映画を中心に、アニメ・小説・漫画など観たもの読んだものを静かに書き留めている個人サイトです。感想と好きな場面、たまに日記を残しています。</p>
+        <p>更新は不定期ですが、心に残った作品はできるだけ丁寧に書くようにしています。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="links">
+    <div class="section-title">
+      <span class="frame-no">02</span>
+      <h2>リンク</h2>
+    </div>
+    <div class="link-grid">
+
+      <a class="link-card" href="#" target="_blank" rel="noopener">
+        <div class="link-icon">🎬</div>
+        <div class="link-text">
+          <span class="link-name">（リンク名を入れる）</span>
+          <span class="link-desc">（サイト説明を入れる）</span>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+
+      <a class="link-card" href="#" target="_blank" rel="noopener">
+        <div class="link-icon">📖</div>
+        <div class="link-text">
+          <span class="link-name">（リンク名を入れる）</span>
+          <span class="link-desc">（サイト説明を入れる）</span>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+
+      <a class="link-card" href="#" target="_blank" rel="noopener">
+        <div class="link-icon">🦋</div>
+        <div class="link-text">
+          <span class="link-name">（リンク名を入れる）</span>
+          <span class="link-desc">（サイト説明を入れる）</span>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+
+      <!-- 必要な分だけ .link-card を追加 -->
+
+    </div>
+  </section>
+
+  <section class="contact">
+    <div class="section-title">
+      <span class="frame-no">03</span>
+      <h2>お問い合わせ</h2>
+    </div>
+
+    <div class="form-card">
+      <p class="form-intro">ご質問・ご感想などはこちらからどうぞ。内容を確認のうえ返信いたします。</p>
+
+      <div data-fs-success class="form-success" style="display:none;">
+        メッセージを送信しました。ありがとうございます。
+      </div>
+      <div data-fs-error class="form-error-global" style="display:none;"></div>
+
+      <form id="contact-form" action="https://formspree.io/f/maqvpvoz" method="POST">
+
+        <div class="form-group">
+          <label class="form-label" for="name">お名前</label>
+          <input class="form-input" type="text" id="name" name="name" placeholder="お名前">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">メールアドレス <span class="required">*</span></label>
+          <input class="form-input" type="email" id="email" name="email" data-fs-field placeholder="example@email.com" required>
+          <span data-fs-error="email" class="field-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="message">メッセージ <span class="required">*</span></label>
+          <textarea class="form-textarea" id="message" name="message" data-fs-field placeholder="メッセージを入力してください…" rows="6" required></textarea>
+          <span data-fs-error="message" class="field-error"></span>
+        </div>
+
+        <button class="form-submit" type="submit" data-fs-submit-btn>送信する</button>
+
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="foot-nav">
+    <a href="index.html">INDEX</a>
+    <a href="blog.html">BLOG</a>
+    <a href="ranking.html">RANKING</a>
+    <a href="about.html">ABOUT</a>
+  </div>
+  <p class="ai-notice">当サイトのコンテンツ（文章・画像等）は、AIの学習データとしての使用を禁止します。No part of this site may be used for AI training purposes.</p>
+  <p class="copy">FILM NOTE — All rights reserved.</p>
+</footer>
+
+<script>
+  window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+  formspree('initForm', { formElement: '#contact-form', formId: 'maqvpvoz' });
+</script>
+<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+
+</body>
+</html>
