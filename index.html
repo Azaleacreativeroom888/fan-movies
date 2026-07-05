@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FILM NOTE | 映画のこと、静かに綴る場所</title>
+<meta name="robots" content="noai, noimageai">
+<style>
+  :root {
+    --film-black: #0d0b0c;
+    --film-black-2: #161314;
+    --film-cream: #ece6da;
+    --film-red: #a13d3d;
+    --film-gold: #b89b5e;
+    --film-grey: #8a8580;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--film-black);
+    color: var(--film-cream);
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+    overflow-x: hidden;
+  }
+
+  /* --- film grain overlay --- */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.05;
+    background-image:
+      radial-gradient(circle at 20% 30%, #fff 0.5px, transparent 0.5px),
+      radial-gradient(circle at 70% 60%, #fff 0.5px, transparent 0.5px),
+      radial-gradient(circle at 40% 80%, #fff 0.5px, transparent 0.5px);
+    background-size: 3px 3px, 4px 4px, 5px 5px;
+    animation: grain 0.5s steps(4) infinite;
+  }
+  @keyframes grain {
+    0%, 100% { transform: translate(0,0); }
+    25% { transform: translate(-1px, 1px); }
+    50% { transform: translate(1px, -1px); }
+    75% { transform: translate(-1px, -1px); }
+  }
+
+  /* --- sprocket strip (top) --- */
+  .sprocket-strip {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 6px;
+    background: #050404;
+    height: 22px;
+    align-items: center;
+  }
+  .sprocket-strip span {
+    width: 11px;
+    height: 11px;
+    background: var(--film-black);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* --- vertical film edge strips (both sides) --- */
+  .film-edge {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 26px;
+    background: #050404;
+    z-index: 500;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--film-cream) 0px,
+      var(--film-cream) 14px,
+      transparent 14px,
+      transparent 26px
+    );
+    background-position: center 6px;
+    background-repeat: repeat-y;
+    background-size: 12px 26px;
+  }
+  .film-edge.left { left: 0; }
+  .film-edge.right { right: 0; }
+
+  body { padding: 0 26px; }
+  header, nav, main, footer, .sprocket-strip { position: relative; z-index: 1; }
+
+  @media (max-width: 700px) {
+    .film-edge { width: 14px; background-size: 8px 22px; }
+    body { padding: 0 14px; }
+  }
+
+  header {
+    position: relative;
+    text-align: center;
+    padding: 70px 20px 50px;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.75)),
+      repeating-linear-gradient(115deg, #1a1516, #1a1516 2px, #100d0e 2px, #100d0e 4px);
+    border-bottom: 1px solid #3a3232;
+  }
+
+  header .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.5em;
+    color: var(--film-gold);
+    text-transform: uppercase;
+  }
+
+  header h1 {
+    font-size: 3rem;
+    margin: 18px 0 10px;
+    color: var(--film-cream);
+    text-shadow: 0 0 18px rgba(161,61,61,0.35);
+    letter-spacing: 0.15em;
+  }
+
+  header p.tagline {
+    font-size: 0.95rem;
+    color: var(--film-grey);
+    letter-spacing: 0.1em;
+  }
+
+  /* --- nav --- */
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    background: var(--film-black-2);
+    flex-wrap: wrap;
+    border-bottom: 1px solid #2c2626;
+  }
+  nav a {
+    color: var(--film-cream);
+    text-decoration: none;
+    padding: 16px 26px;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    position: relative;
+    transition: color 0.3s;
+  }
+  nav a::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 50%;
+    width: 0; height: 2px;
+    background: var(--film-red);
+    transition: all 0.3s;
+    transform: translateX(-50%);
+  }
+  nav a:hover { color: var(--film-gold); }
+  nav a:hover::after { width: 60%; }
+  nav a.current { color: var(--film-gold); }
+  nav a.current::after { width: 60%; }
+
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 70px 24px 100px;
+  }
+
+  section { margin-bottom: 90px; }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+  .section-title .frame-no {
+    font-size: 0.7rem;
+    color: var(--film-grey);
+    border: 1px solid #3a3232;
+    padding: 3px 8px;
+    letter-spacing: 0.1em;
+  }
+  .section-title h2 {
+    font-size: 1.4rem;
+    letter-spacing: 0.15em;
+    color: var(--film-cream);
+    font-weight: normal;
+  }
+  .section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, #3a3232, transparent);
+  }
+
+  .intro p {
+    font-size: 0.98rem;
+    color: #d8d0c2;
+  }
+  .intro p + p { margin-top: 1.2em; }
+
+  /* --- featured filmstrip --- */
+  .filmstrip-frame {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    padding: 14px 4px 22px;
+    scrollbar-width: thin;
+  }
+  .frame-card {
+    flex: 0 0 190px;
+    background: var(--film-black-2);
+    border: 1px solid #332c2c;
+    position: relative;
+  }
+  .frame-card .frame-holes-top,
+  .frame-card .frame-holes-bottom {
+    display: flex;
+    justify-content: space-around;
+    padding: 5px 6px;
+    background: #050404;
+  }
+  .frame-card .frame-holes-top span,
+  .frame-card .frame-holes-bottom span {
+    width: 6px; height: 6px;
+    background: var(--film-black-2);
+    border-radius: 1px;
+  }
+  .frame-card .poster {
+    height: 240px;
+    background:
+      linear-gradient(160deg, rgba(161,61,61,0.18), rgba(0,0,0,0.5)),
+      repeating-linear-gradient(60deg, #22201f, #22201f 3px, #1a1918 3px, #1a1918 6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--film-grey);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-align: center;
+    padding: 10px;
+  }
+  .frame-card .cap {
+    padding: 12px 14px 16px;
+  }
+  .frame-card .cap .ttl {
+    font-size: 0.9rem;
+    color: var(--film-cream);
+    margin-bottom: 4px;
+  }
+  .frame-card .cap .yr {
+    font-size: 0.72rem;
+    color: var(--film-gold);
+    letter-spacing: 0.1em;
+  }
+
+  /* --- diary preview --- */
+  .diary-list {
+    border-top: 1px solid #2c2626;
+  }
+  .diary-item {
+    display: flex;
+    gap: 20px;
+    padding: 18px 6px;
+    border-bottom: 1px solid #2c2626;
+    font-size: 0.9rem;
+  }
+  .diary-item .d-date {
+    flex: 0 0 100px;
+    color: var(--film-gold);
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    padding-top: 2px;
+  }
+  .diary-item .d-text { color: #cfc7ba; }
+  .more-link {
+    display: inline-block;
+    margin-top: 24px;
+    font-size: 0.8rem;
+    color: var(--film-grey);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid #3a3232;
+    padding-bottom: 2px;
+  }
+  .more-link:hover { color: var(--film-gold); border-color: var(--film-gold); }
+
+  /* --- quote reel --- */
+  .quote-reel {
+    text-align: center;
+    padding: 40px 20px;
+    background: repeating-linear-gradient(115deg, #141010, #141010 2px, #0d0b0c 2px, #0d0b0c 4px);
+    border-top: 1px solid #2c2626;
+    border-bottom: 1px solid #2c2626;
+  }
+  .quote-reel p {
+    font-size: 1.05rem;
+    color: var(--film-cream);
+    max-width: 560px;
+    margin: 0 auto;
+    font-style: italic;
+  }
+  .quote-reel span {
+    display: block;
+    margin-top: 14px;
+    font-size: 0.75rem;
+    color: var(--film-grey);
+    letter-spacing: 0.15em;
+  }
+
+  footer {
+    text-align: center;
+    padding: 50px 20px 40px;
+    background: var(--film-black-2);
+    border-top: 1px solid #2c2626;
+  }
+  footer .foot-nav {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+    font-size: 0.78rem;
+  }
+  footer .foot-nav a {
+    color: var(--film-grey);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+  }
+  footer .foot-nav a:hover { color: var(--film-gold); }
+  footer .ai-notice {
+    font-size: 0.68rem;
+    color: #5c5652;
+    max-width: 500px;
+    margin: 0 auto 14px;
+    line-height: 1.7;
+  }
+  footer .copy {
+    font-size: 0.68rem;
+    color: #4a4442;
+    letter-spacing: 0.1em;
+  }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 2rem; }
+    nav a { padding: 14px 14px; font-size: 0.75rem; }
+    .diary-item { flex-direction: column; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="film-edge left"></div>
+<div class="film-edge right"></div>
+
+<div class="sprocket-strip">
+  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<header>
+  <div class="eyebrow">A PERSONAL CINEMA JOURNAL</div>
+  <h1>FILM NOTE</h1>
+  <p class="tagline">スクリーンの光が消えたあとも、残るものについて</p>
+</header>
+
+<nav>
+  <a href="index.html" class="current">INDEX</a>
+  <a href="blog.html">BLOG</a>
+  <a href="ranking.html">RANKING</a>
+  <a href="about.html">ABOUT</a>
+</nav>
+
+<main>
+
+  <section class="intro">
+    <div class="section-title">
+      <span class="frame-no">No.01</span>
+      <h2>ようこそ</h2>
+    </div>
+    <p>ここは、観た映画のことを静かに書き留めていくための場所です。感想も、好きなシーンも、何年経っても忘れられない台詞も。</p>
+    <p>派手な批評ではなく、一本のフィルムが心に落とした影のようなものを、自分のペースで残していきたいと思っています。</p>
+  </section>
+
+  <section class="featured">
+    <div class="section-title">
+      <span class="frame-no">No.02</span>
+      <h2>心に残る作品たち</h2>
+    </div>
+    <div class="filmstrip-frame">
+      <div class="frame-card">
+        <div class="frame-holes-top"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="poster">POSTER<br>PLACEHOLDER</div>
+        <div class="cap">
+          <div class="ttl">映画タイトル</div>
+          <div class="yr">20XX</div>
+        </div>
+        <div class="frame-holes-bottom"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
+      <div class="frame-card">
+        <div class="frame-holes-top"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="poster">POSTER<br>PLACEHOLDER</div>
+        <div class="cap">
+          <div class="ttl">映画タイトル</div>
+          <div class="yr">20XX</div>
+        </div>
+        <div class="frame-holes-bottom"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
+      <div class="frame-card">
+        <div class="frame-holes-top"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="poster">POSTER<br>PLACEHOLDER</div>
+        <div class="cap">
+          <div class="ttl">映画タイトル</div>
+          <div class="yr">20XX</div>
+        </div>
+        <div class="frame-holes-bottom"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
+      <div class="frame-card">
+        <div class="frame-holes-top"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="poster">POSTER<br>PLACEHOLDER</div>
+        <div class="cap">
+          <div class="ttl">映画タイトル</div>
+          <div class="yr">20XX</div>
+        </div>
+        <div class="frame-holes-bottom"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="quote-reel">
+    <p>「良い映画とは、観終わったあとも、しばらく席を立てないものだ」</p>
+    <span>— NOTE TO SELF</span>
+  </section>
+
+  <section class="diary">
+    <div class="section-title">
+      <span class="frame-no">No.03</span>
+      <h2>最近の日記から</h2>
+    </div>
+    <div class="diary-list">
+      <div class="diary-item">
+        <div class="d-date">20XX.XX.XX</div>
+        <div class="d-text">今日は久しぶりに旧作を見返した。何度観ても、あのラストシーンの光の使い方に息を呑む。</div>
+      </div>
+      <div class="diary-item">
+        <div class="d-date">20XX.XX.XX</div>
+        <div class="d-text">新作を映画館で観てきた。帰り道、しばらく何も話したくないくらい余韻が残った。</div>
+      </div>
+      <div class="diary-item">
+        <div class="d-date">20XX.XX.XX</div>
+        <div class="d-text">配信で見つけた小さな作品。派手さはないけれど、静かに胸に残る一本だった。</div>
+      </div>
+    </div>
+    <a href="blog.html" class="more-link">日記をもっと見る →</a>
+  </section>
+
+</main>
+
+<footer>
+  <div class="foot-nav">
+    <a href="index.html">INDEX</a>
+    <a href="blog.html">BLOG</a>
+    <a href="ranking.html">RANKING</a>
+    <a href="about.html">ABOUT</a>
+  </div>
+  <p class="ai-notice">当サイトのコンテンツ（文章・画像等）は、AIの学習データとしての使用を禁止します。No part of this site may be used for AI training purposes.</p>
+  <p class="copy">FILM NOTE — All rights reserved.</p>
+</footer>
+
+</body>
+</html>
