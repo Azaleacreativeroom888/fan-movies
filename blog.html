@@ -7,12 +7,13 @@
 <meta name="robots" content="noai, noimageai">
 <style>
   :root {
-    --film-black: #0d0b0c;
-    --film-black-2: #161314;
-    --film-cream: #ece6da;
+    --film-black: #2b2119;
+    --film-black-2: #3a2c20;
+    --film-cream: #f0e2c8;
     --film-red: #a13d3d;
     --film-gold: #b89b5e;
-    --film-grey: #8a8580;
+    --film-grey: #a08f74;
+    --film-blue: #7fb8c4;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,13 +34,13 @@
     inset: 0;
     pointer-events: none;
     z-index: 999;
-    opacity: 0.05;
+    opacity: 0.09;
     background-image:
       radial-gradient(circle at 20% 30%, #fff 0.5px, transparent 0.5px),
       radial-gradient(circle at 70% 60%, #fff 0.5px, transparent 0.5px),
       radial-gradient(circle at 40% 80%, #fff 0.5px, transparent 0.5px);
     background-size: 3px 3px, 4px 4px, 5px 5px;
-    animation: grain 0.5s steps(4) infinite;
+    animation: none;
   }
   @keyframes grain {
     0%, 100% { transform: translate(0,0); }
@@ -48,12 +49,22 @@
     75% { transform: translate(-1px, -1px); }
   }
 
+  /* --- vignette (film edge darkening) --- */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 998;
+    background: radial-gradient(ellipse at center, transparent 45%, rgba(10,6,3,0.55) 100%);
+  }
+
   .film-edge {
     position: fixed;
     top: 0;
     bottom: 0;
     width: 26px;
-    background: #050404;
+    background: #17110b;
     z-index: 500;
     background-image: repeating-linear-gradient(
       to bottom,
@@ -80,7 +91,7 @@
     display: flex;
     justify-content: space-between;
     padding: 0 6px;
-    background: #050404;
+    background: #17110b;
     height: 22px;
     align-items: center;
   }
@@ -98,8 +109,8 @@
     padding: 60px 20px 40px;
     background:
       linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.75)),
-      repeating-linear-gradient(115deg, #1a1516, #1a1516 2px, #100d0e 2px, #100d0e 4px);
-    border-bottom: 1px solid #3a3232;
+      repeating-linear-gradient(115deg, #241a12, #241a12 2px, #1c130c 2px, #1c130c 4px);
+    border-bottom: 1px solid #4a3a28;
   }
   header .eyebrow {
     font-size: 0.72rem;
@@ -136,13 +147,13 @@
     position: absolute;
     bottom: 0; left: 50%;
     width: 0; height: 2px;
-    background: var(--film-red);
+    background: var(--film-blue);
     transition: all 0.3s;
     transform: translateX(-50%);
   }
-  nav a:hover { color: var(--film-gold); }
+  nav a:hover { color: var(--film-blue); }
   nav a:hover::after { width: 60%; }
-  nav a.current { color: var(--film-gold); }
+  nav a.current { color: var(--film-blue); }
   nav a.current::after { width: 60%; }
 
   main {
@@ -189,7 +200,7 @@
     text-decoration: none;
     letter-spacing: 0.1em;
   }
-  footer .foot-nav a:hover { color: var(--film-gold); }
+  footer .foot-nav a:hover { color: var(--film-blue); }
   footer .ai-notice {
     font-size: 0.68rem;
     color: #5c5652;
