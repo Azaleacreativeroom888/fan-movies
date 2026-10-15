@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GALLERY | FILM NOTE</title>
+<meta name="robots" content="noai, noimageai">
+<style>
+  :root {
+    --film-black: #2b2119;
+    --film-black-2: #3a2c20;
+    --film-cream: #f0e2c8;
+    --film-red: #a13d3d;
+    --film-gold: #b89b5e;
+    --film-grey: #a08f74;
+    --film-blue: #7fb8c4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--film-black);
+    color: var(--film-cream);
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+    overflow-x: hidden;
+    padding: 0 26px;
+  }
+
+  /* --- film grain (static) --- */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.09;
+    background-image:
+      radial-gradient(circle at 20% 30%, #fff 0.5px, transparent 0.5px),
+      radial-gradient(circle at 70% 60%, #fff 0.5px, transparent 0.5px),
+      radial-gradient(circle at 40% 80%, #fff 0.5px, transparent 0.5px);
+    background-size: 3px 3px, 4px 4px, 5px 5px;
+    animation: none;
+  }
+
+  /* --- vignette (film edge darkening) --- */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 998;
+    background: radial-gradient(ellipse at center, transparent 45%, rgba(10,6,3,0.55) 100%);
+  }
+
+  /* --- vertical film edges --- */
+  .film-edge {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 26px;
+    background: #17110b;
+    z-index: 500;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--film-cream) 0px,
+      var(--film-cream) 14px,
+      transparent 14px,
+      transparent 26px
+    );
+    background-position: center 6px;
+    background-repeat: repeat-y;
+    background-size: 12px 26px;
+  }
+  .film-edge.left { left: 0; }
+  .film-edge.right { right: 0; }
+
+  header, nav, main, footer, .sprocket-strip { position: relative; z-index: 1; }
+
+  @media (max-width: 700px) {
+    .film-edge { width: 14px; background-size: 8px 22px; }
+    body { padding: 0 14px; }
+  }
+
+  .sprocket-strip {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 6px;
+    background: #17110b;
+    height: 22px;
+    align-items: center;
+  }
+  .sprocket-strip span {
+    width: 11px;
+    height: 11px;
+    background: var(--film-black);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  header {
+    text-align: center;
+    padding: 60px 20px 40px;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.75)),
+      repeating-linear-gradient(115deg, #241a12, #241a12 2px, #1c130c 2px, #1c130c 4px);
+    border-bottom: 1px solid #4a3a28;
+  }
+  header .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.5em;
+    color: var(--film-gold);
+    text-transform: uppercase;
+  }
+  header h1 {
+    font-size: 2.4rem;
+    margin: 16px 0 8px;
+    color: var(--film-cream);
+    text-shadow: 0 0 18px rgba(161,61,61,0.35);
+    letter-spacing: 0.15em;
+  }
+  header p.tagline {
+    font-size: 0.85rem;
+    color: var(--film-grey);
+    letter-spacing: 0.1em;
+  }
+
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    background: var(--film-black-2);
+    flex-wrap: wrap;
+    border-bottom: 1px solid #2c2626;
+  }
+  nav a {
+    color: var(--film-cream);
+    text-decoration: none;
+    padding: 16px 26px;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    position: relative;
+  }
+  nav a::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 50%;
+    width: 0; height: 2px;
+    background: var(--film-blue);
+    transition: all 0.3s;
+    transform: translateX(-50%);
+  }
+  nav a:hover { color: var(--film-blue); }
+  nav a:hover::after { width: 60%; }
+  nav a.current { color: var(--film-blue); }
+  nav a.current::after { width: 60%; }
+
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 70px 24px 100px;
+  }
+
+  section { margin-bottom: 80px; }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+  .section-title .frame-no {
+    font-size: 0.7rem;
+    color: var(--film-blue);
+    border: 1px solid var(--film-blue);
+    padding: 3px 8px;
+    letter-spacing: 0.1em;
+  }
+  .section-title h2 {
+    font-size: 1.2rem;
+    letter-spacing: 0.15em;
+    color: var(--film-cream);
+    font-weight: normal;
+  }
+  .section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, #4a3a28, transparent);
+  }
+  .section-note {
+    font-size: 0.8rem;
+    color: var(--film-grey);
+    margin-bottom: 28px;
+  }
+
+  /* --- film-frame grid --- */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 22px;
+  }
+
+  .frame-card {
+    background: var(--film-black-2);
+    border: 1px solid #453626;
+  }
+  .frame-holes {
+    display: flex;
+    justify-content: space-around;
+    padding: 5px 6px;
+    background: #17110b;
+  }
+  .frame-holes span {
+    width: 6px;
+    height: 6px;
+    background: var(--film-black-2);
+    border-radius: 1px;
+  }
+
+  .art {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background:
+      linear-gradient(160deg, rgba(161,61,61,0.14), rgba(0,0,0,0.4)),
+      repeating-linear-gradient(60deg, #2e2417, #2e2417 3px, #241b10 3px, #241b10 6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--film-grey);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-align: center;
+    padding: 10px;
+    overflow: hidden;
+  }
+  .art.tall { aspect-ratio: 3 / 4; }
+  .art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    cursor: zoom-in;
+  }
+
+  .cap {
+    padding: 12px 14px 14px;
+  }
+  .cap .ttl {
+    font-size: 0.88rem;
+    color: var(--film-cream);
+    margin-bottom: 2px;
+  }
+  .cap .meta {
+    font-size: 0.7rem;
+    color: var(--film-gold);
+    letter-spacing: 0.1em;
+  }
+
+  /* --- lightbox --- */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(15,9,4,0.92);
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    cursor: zoom-out;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    border: 1px solid #453626;
+  }
+
+  footer {
+    text-align: center;
+    padding: 50px 20px 40px;
+    background: var(--film-black-2);
+    border-top: 1px solid #2c2626;
+  }
+  footer .foot-nav {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+    font-size: 0.78rem;
+  }
+  footer .foot-nav a {
+    color: var(--film-grey);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+  }
+  footer .foot-nav a:hover { color: var(--film-gold); }
+  footer .ai-notice {
+    font-size: 0.68rem;
+    color: #8a7a62;
+    max-width: 560px;
+    margin: 0 auto 14px;
+    line-height: 1.7;
+  }
+  footer .copy {
+    font-size: 0.68rem;
+    color: #7a6a52;
+    letter-spacing: 0.1em;
+  }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.9rem; }
+    nav a { padding: 14px 14px; font-size: 0.75rem; }
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .lightbox { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="film-edge left"></div>
+<div class="film-edge right"></div>
+
+<div class="sprocket-strip">
+  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<header>
+  <div class="eyebrow">DRAWN FROM THE SCREEN</div>
+  <h1>GALLERY</h1>
+  <p class="tagline">映画から生まれた絵と漫画</p>
+</header>
+
+<nav>
+  <a href="index.html">INDEX</a>
+  <a href="blog.html">BLOG</a>
+  <a href="gallery.html" class="current">GALLERY</a>
+  <a href="ranking.html">RANKING</a>
+  <a href="about.html">ABOUT</a>
+</nav>
+
+<main>
+
+  <section class="illust">
+    <div class="section-title">
+      <span class="frame-no">01</span>
+      <h2>ILLUSTRATION</h2>
+    </div>
+    <p class="section-note">映画を観て描いたイラスト。クリックで拡大できます。</p>
+
+    <div class="gallery-grid">
+
+      <figure class="frame-card">
+        <div class="frame-holes"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <!-- 画像を入れるときは下の div の中身を <img src="images/ファイル名.png" alt="作品名"> に差し替え -->
+        <div class="art">IMAGE<br>PLACEHOLDER</div>
+        <figcaption class="cap">
+          <div class="ttl">（作品タイトル）</div>
+          <div class="meta">20XX.XX.XX</div>
+        </figcaption>
+        <div class="frame-holes"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      </figure>
+
+      <figure class="frame-card">
+        <div class="frame-holes"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="art">IMAGE<br>PLACEHOLDER</div>
+        <figcaption class="cap">
+          <div class="ttl">（作品タイトル）</div>
+          <div class="meta">20XX.XX.XX</div>
+        </figcaption>
+        <div class="frame-holes"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      </figure>
+
+      <figure class="frame-card">
+        <div class="frame-holes"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="art">IMAGE<br>PLACEHOLDER</div>
+        <figcaption class="cap">
+          <div class="ttl">（作品タイトル）</div>
+          <div class="meta">20XX.XX.XX</div>
+        </figcaption>
+        <div class="frame-holes"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      </figure>
+
+      <!-- 増やすときは <figure class="frame-card"> ～ </figure> をコピペ -->
+
+    </div>
+  </section>
+
+  <section class="manga">
+    <div class="section-title">
+      <span class="frame-no">02</span>
+      <h2>MANGA</h2>
+    </div>
+    <p class="section-note">映画に関する漫画。縦長のコマ枠で表示します。</p>
+
+    <div class="gallery-grid">
+
+      <figure class="frame-card">
+        <div class="frame-holes"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="art tall">MANGA<br>PLACEHOLDER</div>
+        <figcaption class="cap">
+          <div class="ttl">（漫画タイトル）</div>
+          <div class="meta">20XX.XX.XX</div>
+        </figcaption>
+        <div class="frame-holes"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      </figure>
+
+      <figure class="frame-card">
+        <div class="frame-holes"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="art tall">MANGA<br>PLACEHOLDER</div>
+        <figcaption class="cap">
+          <div class="ttl">（漫画タイトル）</div>
+          <div class="meta">20XX.XX.XX</div>
+        </figcaption>
+        <div class="frame-holes"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      </figure>
+
+      <!-- 増やすときは <figure class="frame-card"> ～ </figure> をコピペ -->
+
+    </div>
+  </section>
+
+</main>
+
+<div class="lightbox" id="lightbox"><img src="" alt=""></div>
+
+<footer>
+  <div class="foot-nav">
+    <a href="index.html">INDEX</a>
+    <a href="blog.html">BLOG</a>
+    <a href="gallery.html">GALLERY</a>
+    <a href="ranking.html">RANKING</a>
+    <a href="about.html">ABOUT</a>
+  </div>
+  <p class="ai-notice">当サイトに掲載されている画像・文章・作品について、AI学習への利用、トレース、無断転載・二次利用を禁止します。Please refrain from using any images or text on this site for AI training, tracing, or unauthorized reproduction.</p>
+  <p class="copy">FILM NOTE — All rights reserved.</p>
+</footer>
+
+<script>
+  (function () {
+    var lb = document.getElementById('lightbox');
+    var lbImg = lb.querySelector('img');
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      if (t.tagName === 'IMG' && t.closest('.art')) {
+        lbImg.src = t.src;
+        lbImg.alt = t.alt;
+        lb.classList.add('open');
+      } else if (lb.classList.contains('open')) {
+        lb.classList.remove('open');
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') lb.classList.remove('open');
+    });
+  })();
+</script>
+
+</body>
+</html>
